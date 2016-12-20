@@ -17,8 +17,6 @@ message("CMake build is: ${CMAKE_BUILD_TYPE}")
 
 include(${PROJECT_SOURCE_DIR}/cmake/settings.cmake)
 
-message("PLATFORM_LINK_LIBRARIES set to ${PLATFORM_LINK_LIBRARIES}")
-
 # various optional libraries and projects
 
 option(DNP3_ALL "Build all optional projects (secauth, demos, tests)" OFF)
@@ -127,7 +125,7 @@ if(DNP3_TLS)
     set(asiopal_link_libraries "${asiopal_link_libraries};${OPENSSL_LIBRARIES}")
 endif()
 
-target_link_libraries(asiopal ${asiopal_link_libraries})
+target_link_libraries(asiopal ${asiopal_link_libraries} ${NETLIBS})
 install(TARGETS asiopal DESTINATION lib)
 set_target_properties(asiopal PROPERTIES FOLDER libs)
 
@@ -161,24 +159,24 @@ if(DNP3_DEMO)
 
   # ----- master demo executable -----
   add_executable(master-demo ./cpp/examples/master/main.cpp)
-  target_link_libraries (master-demo LINK_PUBLIC asiodnp3 ${PLATFORM_LINK_LIBRARIES})
+  target_link_libraries (master-demo LINK_PUBLIC asiodnp3 ${PTHREAD})
   set_target_properties(master-demo PROPERTIES FOLDER demos)
 
   # ----- master demo executable -----
   add_executable(master-gprs-demo ./cpp/examples/master-gprs/main.cpp)
-  target_link_libraries (master-gprs-demo LINK_PUBLIC asiodnp3 ${PLATFORM_LINK_LIBRARIES})
+  target_link_libraries (master-gprs-demo LINK_PUBLIC asiodnp3 ${PTHREAD})
   set_target_properties(master-gprs-demo PROPERTIES FOLDER demos)
 
   # ----- outstation demo executable -----
   add_executable(outstation-demo ./cpp/examples/outstation/main.cpp)
-  target_link_libraries (outstation-demo LINK_PUBLIC asiodnp3 ${PLATFORM_LINK_LIBRARIES})
+  target_link_libraries (outstation-demo LINK_PUBLIC asiodnp3 ${PTHREAD})
   set_target_properties(outstation-demo PROPERTIES FOLDER demos)
 
   if(DNP3_DECODE)
 
     # ----- decoder executable -----
     add_executable(decoder ./cpp/examples/decoder/main.cpp)
-    target_link_libraries (decoder asiodnp3 dnp3decode ${PLATFORM_LINK_LIBRARIES})
+    target_link_libraries (decoder asiodnp3 dnp3decode ${PTHREAD})
     set_target_properties(decoder PROPERTIES FOLDER demos)
 
   endif()
@@ -187,17 +185,17 @@ if(DNP3_DEMO)
 
 	# ----- master tls executable -----
 	add_executable(master-tls-demo ./cpp/examples/tls/master/main.cpp)
-	target_link_libraries (master-tls-demo LINK_PUBLIC asiodnp3 ${PLATFORM_LINK_LIBRARIES})
+	target_link_libraries (master-tls-demo LINK_PUBLIC asiodnp3 ${PTHREAD})
 	set_target_properties(master-tls-demo PROPERTIES FOLDER demos/tls)
 
 	# ----- outstation tls executable -----
 	add_executable(outstation-tls-demo ./cpp/examples/tls/outstation/main.cpp)
-	target_link_libraries (outstation-tls-demo LINK_PUBLIC asiodnp3 ${PLATFORM_LINK_LIBRARIES})
+	target_link_libraries (outstation-tls-demo LINK_PUBLIC asiodnp3 ${PTHREAD})
 	set_target_properties(outstation-tls-demo PROPERTIES FOLDER demos/tls)
 
 	# ----- master-gprs tls executable -----
 	add_executable(master-gprs-tls-demo ./cpp/examples/tls/master-gprs/main.cpp)
-	target_link_libraries (master-gprs-tls-demo LINK_PUBLIC asiodnp3 ${PLATFORM_LINK_LIBRARIES})
+	target_link_libraries (master-gprs-tls-demo LINK_PUBLIC asiodnp3 ${PTHREAD})
 	set_target_properties(master-gprs-tls-demo PROPERTIES FOLDER demos/tls)
 
    endif()
@@ -223,14 +221,14 @@ if(DNP3_TEST)
   # ----- openpal tests -----
   file(GLOB_RECURSE openpal_TESTSRC ./cpp/tests/openpal/src/*.cpp ./cpp/tests/openpal/src/*.h)
   add_executable (testopenpal ${openpal_TESTSRC})
-  target_link_libraries (testopenpal LINK_PUBLIC testlib ${PLATFORM_LINK_LIBRARIES})
+  target_link_libraries (testopenpal LINK_PUBLIC testlib)
   set_target_properties(testopenpal PROPERTIES FOLDER tests)
   add_test(testopenpal testopenpal)
 
   # ----- opendnp3 tests -----
   file(GLOB_RECURSE opendnp3_TESTSRC ./cpp/tests/opendnp3/src/*.cpp ./cpp/tests/opendnp3/src/*.h)
   add_executable (testopendnp3 ${opendnp3_TESTSRC})
-  target_link_libraries (testopendnp3 LINK_PUBLIC dnp3mocks ${PLATFORM_LINK_LIBRARIES})
+  target_link_libraries (testopendnp3 LINK_PUBLIC dnp3mocks)
   set_target_properties(testopendnp3 PROPERTIES FOLDER tests)
   add_test(testopendnp3 testopendnp3)
 
@@ -241,14 +239,14 @@ if(DNP3_TEST)
     file(GLOB asiopal_TESTSRC ./cpp/tests/asiopal/src/*.cpp ./cpp/tests/asiopal/src/*.h ./cpp/tests/asiopal/src/mocks/*.cpp ./cpp/tests/asiopal/src/mocks/*.h)
   endif()
   add_executable (testasiopal ${asiopal_TESTSRC})
-  target_link_libraries (testasiopal LINK_PUBLIC asiopal testlib ${PLATFORM_LINK_LIBRARIES})
+  target_link_libraries (testasiopal LINK_PUBLIC asiopal testlib ${PTHREAD})
   set_target_properties(testasiopal PROPERTIES FOLDER tests)
   add_test(testasiopal testasiopal)
 
   # ----- asiodnp3 tests -----
   file(GLOB_RECURSE asiodnp3_TESTSRC ./cpp/tests/asiodnp3/src/*.cpp ./cpp/tests/asiodnp3/src/*.h)
   add_executable (testasiodnp3 ${asiodnp3_TESTSRC})
-  target_link_libraries (testasiodnp3 LINK_PUBLIC asiodnp3 dnp3mocks ${PLATFORM_LINK_LIBRARIES})
+  target_link_libraries (testasiodnp3 LINK_PUBLIC asiodnp3 dnp3mocks ${PTHREAD})
   set_target_properties(testasiodnp3 PROPERTIES FOLDER tests)
   add_test(testasiodnp3 testasiodnp3)
 

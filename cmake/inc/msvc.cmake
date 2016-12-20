@@ -20,7 +20,8 @@ if (WIN32)
         set(LIB_TYPE STATIC) #default to static on MinGW
 
         # We need to link the demos with these
-        set(PLATFORM_LINK_LIBRARIES "ws2_32" "wsock32")
+        set(NETLIBS "ws2_32" "wsock32")
+		set(PTHREAD pthread)
 
     else()
 

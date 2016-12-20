@@ -1,6 +1,6 @@
 if (UNIX)
 	
-	set(PLATFORM_LINK_LIBRARIES pthread)   
+	set(PTHREAD pthread)   
 	
 	find_package(Threads)
 		if(STATICLIBS)
